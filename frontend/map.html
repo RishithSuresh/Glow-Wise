@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nearby Hospitals</title>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            text-align: center;
+        }
+        .navbar {
+            background-color: #4b286d;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        #map {
+            height: 500px;
+            width: 90%;
+            margin: 20px auto;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #4b286d;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>Glow Wise</div>
+        <div>
+            <a href="index1.html">Home</a>
+            <a href="index1.html#about">About Us</a>
+            <a href="features.html">Features</a>
+            <a href="index1.html#contact">Contact Us</a>
+        </div>
+    </div>
+
+    <h2>Find Nearby Hospitals</h2>
+    <p>Detecting hospitals near you...</p>
+    <div id="map"></div>
+
+    <script>
+        const map = L.map('map').setView([20.5937, 78.9629], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        const redIcon = L.icon({
+            iconUrl: 'img/loc.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+            iconSize: [25, 41], 
+            iconAnchor: [12, 41], 
+            popupAnchor: [1, -34]
+        });
+
+        const blueIcon = L.icon({
+            iconUrl: 'img/Blue.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+            iconSize: [25, 41], 
+            iconAnchor: [12, 41], 
+            popupAnchor: [1, -34]
+        });
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const userLat = position.coords.latitude;
+                const userLng = position.coords.longitude;
+
+                map.setView([userLat, userLng], 14);
+
+                L.marker([userLat, userLng], { icon: redIcon })
+                    .addTo(map)
+                    .bindPopup("<strong>You are here</strong>")
+                    .openPopup();
+
+                const overpassQuery = `
+                    [out:json];
+                    (
+                        node["amenity"="hospital"](around:5000, ${userLat}, ${userLng});
+                        way["amenity"="hospital"](around:5000, ${userLat}, ${userLng});
+                        relation["amenity"="hospital"](around:5000, ${userLat}, ${userLng});
+                    );
+                    out center;
+                `;
+                const overpassURL = `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`;
+
+                fetch(overpassURL)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.elements.length === 0) {
+                            alert("No hospitals found within 5km.");
+                        }
+
+                        data.elements.forEach(hospital => {
+                            const lat = hospital.lat || hospital.center.lat;
+                            const lon = hospital.lon || hospital.center.lon;
+                            const name = hospital.tags.name || "Unnamed Hospital";
+                            const website = hospital.tags.website ? `<a href="${hospital.tags.website}" target="_blank">Visit Website</a>` : "No website available";
+
+                            L.marker([lat, lon], { icon: blueIcon })
+                                .addTo(map)
+                                .bindPopup(`<strong>${name}</strong><br>🌐 ${website}`);
+                        });
+                    })
+                    .catch(error => console.error("Error fetching hospital data:", error));
+            }, () => {
+                alert("Geolocation permission denied. Please enable it to find hospitals.");
+            });
+        } else {
+            alert("Geolocation is not supported by your browser.");
+        }
+    </script>
+</body>
+</html>

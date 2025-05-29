@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetal Growth Tracker</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            padding: 80px 20px 20px; /* Added top padding to prevent content overlap */
+            color: #333;
+            margin: 0;
+        }
+        .navbar {
+            background-color: #4b286d;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            position: fixed; /* Fixed position */
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000; /* Keeps it above other content */
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            margin: auto;
+            transition: 0.3s ease-in-out;
+        }
+        .container:hover {
+            transform: scale(1.02);
+        }
+        select, button {
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background: #776f73;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        select:hover, button:hover {
+            background: #efd7e3;
+        }
+        img {
+            width: 200px;
+            height: auto;
+            margin-top: 10px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        }
+        h2 {
+            color: #d63384;
+        }
+        .card {
+            background: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>Glow Wise</div>
+        <div>
+            <a href="index1.html">Home</a>
+            <a href="index1.html#about">About Us</a>
+            <a href="features.html">Features</a>
+            <a href="index1.html#contact">Contact Us</a>
+        </div>
+    </div>
+    <div class="container">
+        <h2>Fetal Growth Tracker</h2>
+        <label for="week">Select Pregnancy Week:</label>
+        <select id="week" onchange="updateGrowth()">
+            <script>
+                for (let i = 4; i <= 40; i++) {
+                    document.write(`<option value="${i}">Week ${i}</option>`);
+                }
+            </script>
+        </select>
+        <div class="card" id="growth-info">
+            <h3 id="baby-week"></h3>
+            <p id="size-comparison"></p>
+            <p id="measurements"></p>
+            <img id="fruit-img" src="" alt="Baby Size" hidden>
+        </div>
+    </div>
+    
+    <script>
+        const growthData = {
+            4: { size: "Poppy Seed", weight: "<0.04 oz", length: "0.13cm", image: "img/4.jpg" },
+            5: { size: "Sesame Seed", weight: "<0.04 oz", length: "0.32cm", image: "img/5.jpg" },
+            6: { size: "Lentil", weight: "<0.04 oz", length: "1.27cm", image: "img/6.jpg" },
+            7: { size: "Blueberry", weight: "<0.04 oz", length: "1.27cm", image: "img/7.jpg" },
+            8: { size: "Kidney Bean", weight: "20g", length: "1.57cm", image: "img/8.jpg" },
+            9: { size: "Grape", weight: "27g", length: "2.30cm", image: "img/9.jpg"},
+            10: { size: "kumpquat", weight: "35g", length: "3.1cm", image: "img/10.jpg" },
+            11: { size: "Fig", weight: "45g", length: "4.1cm", image: "img/11.jpg" },
+            12: { size: "Lime", weight: "58g", length: "5.4cm", image: "img/12.jpg" },
+            13: { size: "Pea Pod", weight: "73g", length: "6.7cm", image: "img/13.jpg" },
+            14: { size: "Lemon", weight: "93g", length: "14.7cm", image: "img/14.jpg" },
+            15: { size: "An Apple", weight: "117g", length: "16.7cm", image: "img/15.jpg" },
+            16: { size: "Avacado", weight: "146g", length: "18.6cm", image: "img/16.jpg" },
+            17: { size: "Turnip", weight: "181g", length: "20.4cm", image: "img/17.jpg" },
+            18: { size: "Bell pepper", weight: "223g", length: "22.2cm", image: "img/18.jpg" },
+            19: { size: "Heirloom Tomato", weight: "273g", length: "24.0cm", image: "img/19.jpg" },
+            20: { size: "Banana", weight: "331g", length: "25.7cm", image: "img/20.jpg" },
+            21: { size: "Carrot", weight: "399g", length: "27.4cm", image: "img/21.jpg" },
+            22: { size: "Spaghetti Squash", weight: "478g", length: "29.0cm", image: "img/22.jpg" },
+            23: { size: "Large Mango.", weight: "568g", length: "30.6cm", image: "img/23.jpg" },
+            24: { size: "An ear of corn", weight: "670g", length: "32.2cm", image: "img/24.jpg" },
+            25: { size: "An average rutabaga", weight: "785g", length: "33.7cm", image: "img/25.jpg" },
+            26: { size: "A bunch of scallions", weight: "913g", length: "35.1cm", image: "img/26.jpg" },
+            27: { size: "A head of cauliflower", weight: "1055g", length: "36.6cm", image: "img/27.jpg" },
+            28: { size: "A large eggplant", weight: "1210g", length: "37.6cm", image: "img/28.jpg" },
+            29: { size: "A butternut squash", weight: "1379g", length: "39.3cm", image: "img/29.jpg" },
+            30: { size: "A Large Cabbage", weight: "1559g", length: "40.5cm", image: "img/30.jpg" },
+            31: { size: "Coconut", weight: "1751g", length: "41.8cm", image: "img/31.jpg" },
+            32: { size: "A large jicama.", weight: "1953g", length: "43.0cm", image: "img/32.jpg"},
+            33: { size: "Pineapple", weight: "2162g", length: "44.1cm", image: "img/33.jpg" },
+            34: { size: "Cantalonpe", weight: "2377g", length: "45.3cm", image: "img/34.jpg" },
+            35: { size: "Honeydew Melon", weight: "2595g", length: "46.3cm", image: "img/35.jpg" },
+            36: { size: "A head of romaine lettuce", weight: "2813g", length: "47.3cm", image: "img/36.jpg" },
+            37: { size: "A bunch of Swiss chard", weight: "3028g", length: "48.3cm", image: "img/37.jpg" },
+            38: { size: "Leek", weight: "3236g", length: "49.3cm", image: "img/38.jpg" },
+            39: { size: "mini Watermelon", weight: "3435g", length: "50.1cm", image: "img/39.jpg" },
+            40: { size: "Small pumpkin", weight: "3787g", length: "51cm", image: "img/40.jpg" }
+            
+            
+        };
+        
+        function updateGrowth() {
+            let week = document.getElementById("week").value;
+            let info = growthData[week] || growthData[40];
+            document.getElementById("baby-week").textContent = `Week ${week}: Baby is the size of a ${info.size}`;
+            document.getElementById("size-comparison").textContent = `Comparable to: ${info.size}`;
+            document.getElementById("measurements").textContent = `Estimated Weight: ${info.weight}, Length: ${info.length}`;
+            document.getElementById("fruit-img").src = info.image;
+            document.getElementById("fruit-img").hidden = false;
+        }
+        
+        updateGrowth();
+    </script>
+</body>
+</html>

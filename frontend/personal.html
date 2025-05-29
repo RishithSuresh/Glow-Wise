@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: url('https://images.unsplash.com/photo-1554034483-04fda0d3507b?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxjb2xsZWN0aW9uLXBhZ2V8MjB8MjQ0OTMzOXx8ZW58MHx8fHx8') no-repeat center center/cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .navbar {
+            background-color: #4b286d;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .profile-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 450px;
+            text-align: left;
+            animation: fadeIn 1s ease-in-out;
+            margin-top: 60px;
+        }
+        .profile-container h2 {
+            margin-bottom: 20px;
+            font-size: 26px;
+            color: #444;
+            border-bottom: 3px solid #764ba2;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+        .profile-details p {
+            margin: 12px 0;
+            font-size: 18px;
+            color: #333;
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px dashed #ddd;
+            padding-bottom: 5px;
+        }
+        .profile-details p strong {
+            color: #555;
+        }
+        .profile-details input {
+            width: calc(100% - 20px);
+            padding: 5px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .save-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4b286d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .save-button:hover {
+            background-color: #764ba2;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <script>
+        async function fetchUserProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user_id'); // Get user ID from query parameter
+
+            if (!userId) {
+                alert('User ID is missing!');
+                return;
+            }
+
+            try {
+                const response = await fetch(`get_user.php?user_id=${userId}`);
+                const user = await response.json();
+
+                if (user) {
+                    document.getElementById('userId').value = user.id || '';
+                    document.getElementById('userName').value = user.name || '';
+                    document.getElementById('userAge').value = user.age || '';
+                    document.getElementById('userHeight').value = user.height || '';
+                    document.getElementById('userWeight').value = user.weight || '';
+                    document.getElementById('userActivity').value = user.activity || '';
+                    document.getElementById('userEmail').value = user.email || '';
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        }
+
+        async function saveUserProfile() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('user_id'); // Get user ID from query parameter
+
+            if (!userId) {
+                alert('User ID is missing!');
+                return;
+            }
+
+            try {
+                const user = {
+                    id: userId,
+                    name: document.getElementById('userName').value,
+                    age: document.getElementById('userAge').value,
+                    height: document.getElementById('userHeight').value,
+                    weight: document.getElementById('userWeight').value,
+                    activity: document.getElementById('userActivity').value,
+                    email: document.getElementById('userEmail').value
+                };
+
+                const response = await fetch('save_user.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user)
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('User profile saved successfully!');
+                    } else {
+                        alert('Failed to save user profile: ' + result.error);
+                    }
+                } else {
+                    alert('Failed to save user profile. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error saving user data:', error);
+                alert('An error occurred while saving the profile.');
+            }
+        }
+
+        window.onload = fetchUserProfile;
+    </script>
+</head>
+<body>
+    <div class="navbar">
+        <div>Glow Wise</div>
+        <div>
+            <a href="index1.html">Home</a>
+            <a href="index1.html#about">About Us</a>
+            <a href="features.html">Features</a>
+            <a href="index1.html#contact">Contact Us</a>
+        </div>
+    </div>
+    <div class="profile-container">
+        <h2>User Profile</h2>
+        <div class="profile-details">
+            <p><strong>User ID:</strong> <input type="text" id="userId" readonly></p>
+            <p><strong>Name:</strong> <input type="text" id="userName"></p>
+            <p><strong>Age:</strong> <input type="number" id="userAge"></p>
+            <p><strong>Height:</strong> <input type="text" id="userHeight"></p>
+            <p><strong>Weight:</strong> <input type="text" id="userWeight"></p>
+            <p><strong>Activity Level:</strong> <input type="text" id="userActivity"></p>
+            <p><strong>Email ID:</strong> <input type="email" id="userEmail"></p>
+        </div>
+        <button class="save-button" onclick="saveUserProfile()">Save</button>
+    </div>
+</body>
+</html>

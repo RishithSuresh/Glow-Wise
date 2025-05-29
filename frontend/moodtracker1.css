@@ -1,0 +1,253 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Lora', serif;
+    color: #333;
+    background-color: #FAE6FA;
+    
+  }
+  
+  
+  
+  .section {
+    padding: 50px 20px;
+    text-align: center;
+  }
+  
+  .mood-section {
+    background: #fff;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    max-width: 800px;
+  }
+  
+  .form-container h2, .form-container p {
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+    text-align: left;
+  }
+  
+  .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  select, input, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+  
+  textarea {
+    resize: none;
+  }
+  
+  button.log-btn {
+    background-color: #4b306a;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  
+  button.log-btn:hover {
+    background-color: #3a2754;
+  }
+  
+  .chart-container {
+    max-width: 700px;
+    margin: 30px auto;
+  }
+  
+  footer {
+    background-color: #4b306a;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 50px;
+  }
+  
+
+
+
+
+  /* Navigation Bar */
+.navbar {
+  background-color: #4b306a; /* Elegant deep purple */
+  position: sticky;
+  top: 0;
+  width: 100%;
+  padding: 15px 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+  z-index: 100; /* Ensures navbar is on top of other content */
+}
+
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.navbar-logo {
+  color: white;
+  font-size: 2rem; /* Larger logo font for better visibility */
+  text-decoration: none;
+  font-weight: bold;
+  letter-spacing: 1px; /* Subtle spacing for a more refined look */
+  
+}
+
+.navbar-links {
+  list-style: none;
+  display: flex;
+  gap: 30px; /* Increased gap for a more spacious layout */
+}
+
+.navbar-links li {
+  font-size: 1.1rem;
+}
+
+.navbar-links a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500; /* Slightly bolder for better readability */
+  padding: 10px 15px; /* Added padding for touch targets */
+  border-radius: 8px; /* Rounded corners for a modern feel */
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.navbar-links a:hover {
+  color: #f0a6ca; /* Soft pink color on hover */
+  background-color: rgba(240, 166, 202, 0.2); /* Subtle background hover effect */
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar-container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 15px;
+  }
+
+  .navbar-logo {
+    font-size: 1.8rem;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    margin-top: 20px;
+  
+  }
+
+  .navbar-links a {
+    width: 100%;
+    padding: 12px 0;
+    text-align: center;
+  }
+}
+
+/* Center the graph and make it more attractive */
+.chart-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px auto;
+  padding: 20px;
+  max-width: 800px;
+  background: #f9f9f9; /* Light background for contrast */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+#mood-chart {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Center the section title and description */
+#mood-visualization h2 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#mood-visualization p {
+  text-align: center;
+  font-size: 1rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+/* Add responsive design for smaller screens */
+@media (max-width: 768px) {
+  .chart-wrapper {
+    padding: 15px;
+  }
+
+  #mood-visualization h2 {
+    font-size: 1.5rem;
+  }
+
+  #mood-visualization p {
+    font-size: 0.9rem;
+  }
+}
+
+#mood-message {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 16px;
+  color: #333;
+  text-align: center;
+}
+
+.date-range {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.date-range label {
+  font-weight: bold;
+}
+
+.date-range input {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.date-range button {
+  padding: 5px 15px;
+  background-color: #4b306a;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.date-range button:hover {
+  background-color: #3a2754;
+}

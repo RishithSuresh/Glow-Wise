@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('img/loginbb.jpg') no-repeat center center/cover;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #A2D2FF;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #FFAFCC;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #A2D2FF;
+        }
+
+        .link {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .link a {
+            color: #3b94e7;
+            text-decoration: none;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Login</h1>
+        
+        <!-- Login Form -->
+        <form id="login-form">
+            <input type="text" id="login-username" placeholder="Username" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="button" onclick="login()">Login</button>
+            <div class="link">
+                <a href="#" onclick="showRegister()">Create an account</a>
+            </div>
+        </form>
+
+        <!-- Registration Form -->
+        <form id="register-form" style="display: none;">
+            <h2>Register</h2>
+            <input type="text" id="reg-username" placeholder="Username" required>
+            <input type="email" id="reg-email" placeholder="Email" required>
+            <input type="password" id="reg-password" placeholder="Password" required>
+            <button type="button" onclick="register()">Register</button>
+            <div class="link">
+                <a href="#" onclick="showLogin()">Already have an account? Login</a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Utility functions to toggle forms
+        function showRegister() {
+            document.getElementById('login-form').style.display = 'none';
+            document.getElementById('register-form').style.display = 'block';
+        }
+
+        function showLogin() {
+            document.getElementById('register-form').style.display = 'none';
+            document.getElementById('login-form').style.display = 'block';
+        }
+
+        // Registration
+        async function register() {
+            const username = document.getElementById('reg-username').value;
+            const email = document.getElementById('reg-email').value;
+            const password = document.getElementById('reg-password').value;
+
+            if (!username || !email || !password) {
+                alert('All fields are required!');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        name: username, 
+                        age: 25, // Example default value
+                        gender: 'Other', // Example default value
+                        height: 170, // Example default value
+                        weight: 70, // Example default value
+                        activity_level: 'Moderate', // Example default value
+                        username, 
+                        email, 
+                        password 
+                    })
+                });
+
+                if (response.ok) {
+                    alert('Registration successful!');
+                    showLogin();
+                } else {
+                    const errorMessage = await response.text();
+                    alert(`Registration failed: ${errorMessage}`);
+                }
+            } catch (error) {
+                console.error('Error during registration:', error);
+                alert('An error occurred during registration.');
+            }
+        }
+
+        // Login
+        async function login() {
+            const username = document.getElementById('login-username').value;
+            const password = document.getElementById('login-password').value;
+
+            if (!username || !password) {
+                alert('Username and password are required!');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3000/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+
+                if (response.ok) {
+                    alert('Login successful!');
+                    // Redirect to index1.html
+                    window.location.href = "index1.html";
+                } else {
+                    const errorMessage = await response.text();
+                    alert(`Login failed: ${errorMessage}`);
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                alert('An error occurred during login.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Glow Wise</title>
+  <link rel="stylesheet" href="styles1.css">
+  <script defer src="script1.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@2.6.4/dist/email.min.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      document.getElementById("contactForm").addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        // Collect form data
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const message = document.getElementById("message").value;
+
+        const formData = {
+          name: name,
+          email: email,
+          message: message,
+        };
+
+        // Send form data to the backend
+        fetch("http://localhost:3000/send-email", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => {
+            if (response.ok) {
+              document.getElementById("responseMessage").textContent = "Your message has been sent. We'll get back to you soon.";
+              document.getElementById("responseMessage").style.color = "green";
+              document.getElementById("contactForm").reset();
+            } else {
+              throw new Error("Failed to send message.");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("responseMessage").textContent = "Something went wrong.";
+            document.getElementById("responseMessage").style.color = "red";
+          });
+      });
+    });
+  </script>
+</head>
+<body>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="#home" class="navbar-logo">Glow Wise</a>
+      <ul class="navbar-links" id="navbar-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="features.html">Features</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Section with Text -->
+  <section id="home" class="home-section">
+    <div class="container">
+      <div class="home-text">
+        <h1 class="home-title">Welcome to Glow Wise</h1>
+        <p class="home-subtitle">"Empowering Women’s Health & Well-being"</p>
+        <p class="home-description">
+            Your well-being matters, and we’re here to support you. Explore expert guidance on menstrual health, maternal care, and mental well-being. Understand your cycle, navigate motherhood with confidence, and prioritize self-care. Together, let’s create a healthier, happier future.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Us Section -->
+  <section id="about" class="about-section">
+    <div class="about-container">
+      <h2>About Us</h2>
+      <p>Your well-being is our priority. We provide expert guidance and a supportive space to help women navigate menstrual health, maternal care, and mental well-being. Whether you’re looking to understand your cycle, prepare for motherhood, or focus on self-care, our platform offers trusted resources to support you every step of the way. Join us in creating a healthier, happier future—because you deserve care, knowledge, and support at every stage of life. 💕.</p>
+      <div class="about-content">
+        <div class="about-image">
+          <img src="img/aboutus.jpeg" alt="Supportive Lifestyle">
+        </div>
+        <div class="about-mission">
+          <h3>Our Mission</h3>
+          <p>Providing expert guidance and a nurturing community.</p>
+          <ul>
+            <li>🌸 Menstrual Health – Understand your cycle, manage symptoms, and embrace hormonal balance for a healthier period experience.</li>
+            <li>🤰 Maternal Care – From pregnancy to postpartum, access essential guidance on prenatal health, recovery, and emotional well-being.</li>
+            <li>🧠 Mental Well-being – Prioritize self-care, manage stress, and explore mental health resources tailored to women’s unique challenges</li>
+          </ul>
+        </div>
+      </div>
+      <div class="about-cta">
+        <p>Join us on this journey!</p>
+        <a href="#contact" class="btn">Get in Touch</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Us Section -->
+  <section id="contact" class="contact-section">
+    <div class="contact-container">
+      <h2>Contact Us</h2>
+      <p>We'd love to hear from you!</p>
+      <div class="contact-content">
+        <div class="contact-info">
+          <div class="contact-item">
+            <img src="img/email.jpg" alt="Email Icon" class="contact-icon">
+            <p>Email: glowwise19@gmail.com</a></p>
+          </div>
+          <div class="contact-item">
+            <img src="img/contact.jpg" alt="Phone Icon" class="contact-icon">
+            <p>Phone: +91 9972675973</a></p>
+          </div>
+          <div class="contact-item">
+            <img src="img/location.jpg" alt="Location Icon" class="contact-icon">
+            <p>Address: 123 Main Street, Bangalore</p>
+          </div>
+        </div>
+        <div class="contact-form">
+          <h3>Send Us a Message</h3>
+          <form id="contactForm">
+            <input type="text" id="name" name="name" placeholder="Your Name" required>
+            <input type="email" id="email" name="email" placeholder="Your Email" required>
+            <textarea id="message" name="message" placeholder="Your Message" rows="5" required></textarea>
+            <button type="submit" class="btn">Send Message</button>
+          </form>
+          <p id="responseMessage"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

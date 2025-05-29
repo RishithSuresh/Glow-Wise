@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cramp-Relief Exercise</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffd5e4;
+            text-align: center;
+        }
+        .navbar {
+            background-color: #4b286d;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .exercise-list-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .exercise-list {
+            text-align: left;
+        }
+        .exercise-image {
+            max-width: 100%;
+            width: 400px; /* Adjust size as needed */
+            height: auto;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+        .exercise {
+            background: #e0e0e0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            position: relative;
+            display: none;
+        }
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #d9534f;
+            margin-top: 10px;
+        }
+        .btn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 10px 15px;
+            background: #d9a6f7;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>Glow Wise</div>
+        <div>
+            <a href="index1.html">Home</a>
+            <a href="index1.html#about">About Us</a>
+            <a href="features.html">Features</a>
+            <a href="index1.html#contact">Contact Us</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1>Cramp-Relief Exercise</h1>
+        <p>Guided exercises to relieve menstrual cramps and improve comfort.</p>
+        <div class="exercise-list-container">
+            <div class="exercise-list">
+                <h2>Exercise List</h2>
+                <ul>
+                    <script>
+                        let exercises = [
+                            { title: "Child’s Pose", description: "Gently stretch your lower back and hips while relaxing your abdomen.", image: 'img/childpose.jpeg' },
+                            { title: "Cat-Cow Stretch", description: "Improve circulation and relieve lower back pain with this gentle spinal movement.", image: 'img/catcow.jpeg' },
+                            { title: "Knee-to-Chest Stretch", description: "Reduce tension in the lower abdomen and improve relaxation.", image: 'img/knee.jpeg' },
+                            { title: "Seated Forward Bend", description: "Stretch your back and relax your abdominal muscles.", image: 'img/seat.jpeg' },
+                            { title: "Reclining Twist", description: "Stretch your spine and massage abdominal organs.", image: 'img/twist.jpeg' },
+                            { title: "Butterfly Stretch", description: "Open up the hips and ease pelvic discomfort.", image: 'img/butterfly.jpeg' },
+                            { title: "Supine Bound Angle Pose", description: "Relax the pelvis and improve circulation.", image: 'img/angle.png' },
+                            { title: "Bridge Pose", description: "Strengthen the back and release tension in the abdomen.", image: 'img/bridge.jpeg'},
+                            { title: "Standing Forward Bend", description: "Improve blood flow and stretch the lower back.", image: 'img/standbend.jpeg' }
+                        ];
+
+                        exercises.forEach(ex => {
+                            document.write(`<li>${ex.title}</li>`);
+                        });
+                    </script>
+                </ul>
+            </div>
+            <img src='img/crampe.jpg' alt="Exercise Guide" class="exercise-image">
+        </div>
+        
+        <div id="exercise-container" class="exercise">
+            <h3 id="exercise-title"></h3>
+            <p id="exercise-description"></p>
+            <img id="exercise-image" src="" alt="Exercise Image">
+            <p class="timer" id="timer">30s</p>
+        </div>
+
+        <button onclick="startWorkout()" class="btn">Start Exercise</button>
+        <button onclick="stopTimer()" class="btn" style="background: #e98380;">Stop Timer</button>
+        <button onclick="skipExercise()" class="btn" style="background: #efc487;">Skip or plus 10 sec</button>
+        <button onclick="toggleMusic()" class="btn" style="background: #4b286d;">🎵 Music</button>
+
+        <audio id="exercise-music" src="mus.mp3" loop></audio>
+    </div>
+
+    <script>
+        let currentExercise = 0;
+        let timer;
+        let timeLeft = 30;
+        let isPaused = false;
+        let onBreak = false;
+        let breakTime = 10;
+        let music = document.getElementById("exercise-music");
+
+        function showNextExercise() {
+            if (currentExercise >= exercises.length) {
+                document.getElementById("exercise-container").innerHTML = "<h2>Workout Complete!</h2>";
+                stopMusic();
+                return;
+            }
+            
+            let exercise = exercises[currentExercise];
+            document.getElementById("exercise-title").innerText = exercise.title;
+            document.getElementById("exercise-description").innerText = exercise.description;
+            document.getElementById("exercise-image").src = exercise.image;
+            document.getElementById("timer").innerText = timeLeft + "s";
+            document.getElementById("exercise-container").style.display = "block";
+        }
+
+        function startTimer() {
+            clearInterval(timer);
+            isPaused = false;
+            startMusic();
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = timeLeft + "s";
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    if (!onBreak) {
+                        onBreak = true;
+                        document.getElementById("exercise-title").innerText = "Break Time";
+                        document.getElementById("exercise-description").innerText = "Rest for 10 seconds.";
+                        document.getElementById("exercise-image").style.display = "none";
+                        timeLeft = breakTime;
+                        startTimer();
+                    } else {
+                        onBreak = false;
+                        document.getElementById("exercise-image").style.display = "block";
+                        currentExercise++;
+                        timeLeft = 30;
+                        showNextExercise();
+                        startTimer();
+                    }
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timer);
+            isPaused = true;
+            stopMusic();
+        }
+
+        function startWorkout() {
+            if (!isPaused) {
+                currentExercise = 0;
+                timeLeft = 30;
+            }
+            isPaused = false;
+            showNextExercise();
+            startTimer();
+        }
+
+        function toggleMusic() {
+            if (music.paused) {
+                music.play();
+            } else {
+                music.pause();
+            }
+        }
+
+        function startMusic() {
+            music.play();
+        }
+
+        function stopMusic() {
+            music.pause();
+            music.currentTime = 0;
+        }
+    </script>
+</body>
+</html>

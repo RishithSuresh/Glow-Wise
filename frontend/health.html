@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pregnancy Health Check & Reminders</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffe6e6;
+            text-align: center;
+            padding: 0;
+            margin: 0;
+        }
+        .navbar {
+            background-color: #4b286d;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 450px;
+            margin: 80px auto 20px; /* Adjusted to avoid overlap */
+        }
+        h2 {
+            color: #d63384;
+        }
+        .input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+        }
+        input, select, button {
+            padding: 10px;
+            width: 90%;
+            max-width: 350px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        button {
+            background-color: #d63384;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #b92a6a;
+        }
+        .section {
+            margin-top: 20px;
+            text-align: center;
+        }
+        ul {
+            padding: 0;
+            list-style-type: none;
+        }
+        li {
+            background: #ffe6f2;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>Glow Wise</div>
+        <div>
+            <a href="index1.html">Home</a>
+            <a href="index1.html#about">About Us</a>
+            <a href="features.html">Features</a>
+            <a href="index1.html#contact">Contact Us</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Pregnancy Health Check & Reminders</h2>
+        
+        <!-- Appointment & Checkup Reminders -->
+        <div class="section">
+            <h3>Doctor Visit Scheduler</h3>
+            <p>Schedule and keep track of important doctor visits, including OB-GYN checkups, ultrasounds, and blood tests.</p>
+            <div class="input-container">
+                <label for="appointmentType">Select Appointment Type:</label>
+                <select id="appointmentType">
+                    <option value="OB-GYN">OB-GYN</option>
+                    <option value="Ultrasound">Ultrasound</option>
+                    <option value="Blood Test">Blood Test</option>
+                </select>
+                <input type="date" id="appointmentDate">
+                <button onclick="addAppointment()">Add Appointment</button>
+            </div>
+            <ul id="appointmentList"></ul>
+        </div>
+
+        <!-- Lab Test & Screening Alerts -->
+        <div class="section">
+            <h3>Lab Test & Screening Alerts</h3>
+            <p>Set reminders for upcoming lab tests and screenings to ensure timely checkups and a healthy pregnancy.</p>
+            <div class="input-container">
+                <input type="text" id="labTestName" placeholder="Enter Test Name">
+                <input type="date" id="labTestDate">
+                <button onclick="addLabTest()">Add Test</button>
+            </div>
+            <ul id="labTestList"></ul>
+        </div>
+
+        <!-- Health Monitoring -->
+        <div class="section">
+            <h3>Health Monitoring</h3>
+            <p>Log and track vital health parameters such as weight, blood pressure, and fetal movements.</p>
+            <div class="input-container">
+                <label>Weight (kg):</label>
+                <input type="number" id="weight">
+                <button onclick="addWeight()">Log Weight</button>
+            </div>
+            <ul id="weightList"></ul>
+
+            <div class="input-container">
+                <label>Blood Pressure (mmHg):</label>
+                <input type="text" id="bloodPressure">
+                <button onclick="addBP()">Log BP</button>
+            </div>
+            <ul id="bpList"></ul>
+
+            <div class="input-container">
+                <label>Fetal Movements:</label>
+                <input type="number" id="fetalMovements">
+                <button onclick="addFetalMovements()">Log Movements</button>
+            </div>
+            <ul id="fetalMovementList"></ul>
+        </div>
+
+        <!-- Medication & Supplement Reminders -->
+        <div class="section">
+            <h3>Medication & Supplement Reminders</h3>
+            <p>Keep track of your medications and supplements by setting reminders for timely consumption.</p>
+            <div class="input-container">
+                <input type="text" id="medicationName" placeholder="Enter Medication Name">
+                <input type="time" id="medicationTime">
+                <button onclick="addMedication()">Add Reminder</button>
+            </div>
+            <ul id="medicationList"></ul>
+        </div>
+        <button onclick="openMaps()">Find Nearest Hospital</button>        
+    </div>
+
+    <script>
+        function addAppointment() {
+            const type = document.getElementById("appointmentType").value;
+            const date = document.getElementById("appointmentDate").value;
+            if (!date) return alert("Please enter a date.");
+            addToList("appointmentList", `${type} Appointment: ${date}`);
+        }
+
+        function addLabTest() {
+            const name = document.getElementById("labTestName").value;
+            const date = document.getElementById("labTestDate").value;
+            if (!name || !date) return alert("Please enter test name and date.");
+            addToList("labTestList", `${name} Test: ${date}`);
+        }
+
+        function addWeight() {
+            const weight = document.getElementById("weight").value;
+            if (!weight) return alert("Please enter your weight.");
+            addToList("weightList", `Weight Log: ${weight} kg`);
+        }
+
+        function addBP() {
+            const bp = document.getElementById("bloodPressure").value;
+            if (!bp) return alert("Please enter blood pressure reading.");
+            addToList("bpList", `BP Log: ${bp} mmHg`);
+        }
+
+        function addFetalMovements() {
+            const movements = document.getElementById("fetalMovements").value;
+            if (!movements) return alert("Please enter fetal movements count.");
+            if (movements < 5) alert("Fetal movements are low. Please consult a doctor.");
+            addToList("fetalMovementList", `Fetal Movements: ${movements} times`);
+        }
+
+        function addMedication() {
+            const name = document.getElementById("medicationName").value;
+            const time = document.getElementById("medicationTime").value;
+            if (!name || !time) return alert("Please enter medication name and time.");
+            addToList("medicationList", `Take ${name} at ${time}`);
+        }
+
+        function addToList(listId, text) {
+            const ul = document.getElementById(listId);
+            const li = document.createElement("li");
+            li.textContent = text;
+            ul.appendChild(li);
+        }
+
+        function openMaps() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    window.open(`https://www.google.com/maps/search/hospital/@${lat},${lon},15z`, "_blank");
+                }, function() {
+                    alert("Unable to retrieve location. Opening general hospital search.");
+                    window.open("https://www.google.com/maps/search/hospital+near+me", "_blank");
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+                window.open("https://www.google.com/maps/search/hospital+near+me", "_blank");
+            }
+        }
+    </script>
+
+</body>
+</html>
+<!-- This is not a code change, but here are the steps to fix your git error:
+//
+// 1. Check your current branch name:
+//    git branch
+//
+// 2. If your branch is 'main', push using:
+//    git push origin main
+//
+// 3. If you have not committed any files yet, add and commit first:
+//    git add .
+//    git commit -m "Initial commit"
+//
+// 4. Then push to the correct branch:
+//    git push origin main
+//
+// 5. If you want to create a 'master' branch:
+//    git checkout -b master
+//    git push origin master
+// -->

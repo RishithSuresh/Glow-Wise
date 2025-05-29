@@ -1,0 +1,497 @@
+/* Mindful & Meditation Section */
+#mindful-meditation {
+    background-color: #e6f7ff; /* Soft calming blue */
+    padding: 60px 15%; /* Adjusted padding for better spacing */
+    text-align: center;
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .title-section {
+    margin-bottom: 50px;
+  }
+  
+  .meditation-title {
+    font-size: 3.5rem;
+    color: #A2D2FF;
+    margin-bottom: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: capitalize;
+  }
+  
+  .meditation-subtitle {
+    font-size: 1.4rem;
+    color: #444;
+    margin-bottom: 25px;
+    font-style: italic;
+  }
+  
+  .meditation-description {
+    font-size: 1.2rem;
+    color: #555;
+    line-height: 1.8;
+    margin-bottom: 40px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .meditation-icons {
+    display: flex;
+    justify-content: space-around;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  
+  .meditation-icon-card {
+    background-color: white;
+    border-radius: 15px;
+    padding: 30px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+    margin-bottom: 30px;
+    position: relative;
+  }
+  
+  .meditation-icon-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+  }
+  
+  .meditation-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease, filter 0.3s ease;
+  }
+  
+  .meditation-icon-card img:hover {
+    transform: scale(1.1);
+    filter: brightness(1.2);
+  }
+  
+  .meditation-icon-card h4 {
+    font-size: 1.5rem;
+    color: #4a90e2;
+    margin-bottom: 15px;
+    font-weight: 600;
+  }
+  
+  .meditation-icon-card p {
+    font-size: 1.1rem;
+    color: #777;
+    line-height: 1.6;
+  }
+  
+  .meditation-button {
+    background-color: #4a90e2;
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.3rem;
+    border: none;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    margin-top: 40px;
+    display: inline-block;
+  }
+  
+  .meditation-button:hover {
+    background-color: #3b7bc1;
+    transform: translateY(-3px);
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    #mindful-meditation {
+      padding: 50px 5%;
+    }
+  
+    .meditation-title {
+      font-size: 2.8rem;
+    }
+  
+    .meditation-subtitle {
+      font-size: 1.2rem;
+    }
+  
+    .meditation-description {
+      font-size: 1rem;
+    }
+  
+    .meditation-icons {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .meditation-icon-card {
+      width: 80%;
+      margin-bottom: 20px;
+    }
+  
+    .meditation-button {
+      font-size: 1.1rem;
+      padding: 12px 25px;
+    }
+  }
+  
+  /* Navigation Bar */
+  .navbar {
+    background-color: #4b306a; /* Elegant deep purple */
+    position: sticky;
+    top: 0;
+    width: 100%;
+    padding: 15px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+    z-index: 100; /* Ensures navbar is on top of other content */
+  }
+  
+  .navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+  
+  .navbar-logo {
+    color: white;
+    font-size: 2rem; /* Larger logo font for better visibility */
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 1px; /* Subtle spacing for a more refined look */
+    
+  }
+  
+  .navbar-links {
+    list-style: none;
+    display: flex;
+    gap: 30px; /* Increased gap for a more spacious layout */
+  }
+  
+  .navbar-links li {
+    font-size: 1.1rem;
+  }
+  
+  .navbar-links a {
+    color: white;
+    text-decoration: none;
+    font-weight: 500; /* Slightly bolder for better readability */
+    padding: 10px 15px; /* Added padding for touch targets */
+    border-radius: 8px; /* Rounded corners for a modern feel */
+    transition: color 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .navbar-links a:hover {
+    color: #f0a6ca; /* Soft pink color on hover */
+    background-color: rgba(240, 166, 202, 0.2); /* Subtle background hover effect */
+  }
+  
+  /* Mobile Responsiveness */
+  @media (max-width: 768px) {
+    .navbar-container {
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 10px 15px;
+    }
+  
+    .navbar-logo {
+      font-size: 1.8rem;
+    }
+  
+    .navbar-links {
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+      margin-top: 20px;
+    }
+  
+    .navbar-links a {
+      width: 100%;
+      padding: 12px 0;
+      text-align: center;
+    }
+  }
+  
+  
+  .meditation-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .meditation-icon-card {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    width: 250px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .meditation-icon-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+  }
+  
+  .meditation-icon {
+    width: 80px;
+    margin-bottom: 15px;
+  }
+  
+  .meditation-icon-card h4 {
+    font-size: 1.2rem;
+    color: #4b306a;
+    margin-bottom: 10px;
+  }
+  
+  .meditation-icon-card p {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 15px;
+  }
+  
+  .feature-button {
+    background-color: #f0a6ca;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .feature-button:hover {
+    background-color: #d087ab;
+  }
+  
+  /* Modal Styling */
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8); /* Dark overlay */
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    position: relative;
+    max-width: 800px;
+    width: 90%;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  #modal-video {
+    width: 100%;
+    border-radius: 8px;
+  }
+  
+  
+  
+  
+  /* General Styles */
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Meditation Grid Layout */
+  .meditation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 Columns */
+    gap: 20px; /* Space between cards */
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto; /* Center the grid */
+  }
+  
+  /* Meditation Card Styling */
+  .meditation-card {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    padding: 20px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .meditation-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+  
+  .meditation-icon {
+    width: 80px;
+    height: 80px;
+    margin-bottom: 15px;
+  }
+  
+  h4 {
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  .feature-button {
+    background-color: #c9a4df;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .feature-button:hover {
+    background-color: #4cae4c;
+  }
+  
+  /* Modal Styles */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    padding: 20px;
+    max-width: 800px;
+    margin: 100px auto;
+    border-radius: 10px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 18px;
+    color: #333;
+    cursor: pointer;
+  }
+  
+  #modal-video {
+    width: 100%;
+    border-radius: 10px;
+  }
+  
+  
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+  }
+  
+  .close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .close-button:hover,
+  .close-button:focus {
+    color: #000;
+    text-decoration: none;
+  }
+  
+  .modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    overflow: auto;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 800px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .close-button {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+  }
+  
+  .close-button:hover {
+    color: #000;
+  }

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pregnancy Vaccination Reminder</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to right, #ff9a9e, #fad0c4);
+            padding: 80px 20px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+
+        .navbar {
+            background-color: #4b286d;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 700px;
+            animation: fadeIn 1s ease-in-out;
+        }
+
+        h2 {
+            color: #d63384;
+        }
+
+        label, select, input {
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        select, input {
+            padding: 8px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background: #d63384;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #a62167;
+        }
+
+        p, ul {
+            font-size: 14px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background: #ffe3ed;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hidden { 
+            display: none; 
+        }
+
+        .red-text {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div>Glow Wise</div>
+        <div>
+            <a href="index1.html">Home</a>
+            <a href="index1.html#about">About Us</a>
+            <a href="features.html">Features</a>
+            <a href="index1.html#contact">Contact Us</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Pregnancy Vaccination Checker</h2>
+        <label>
+            Are you pregnant?
+            <select id="pregnancyStatus">
+                <option value="no">No</option>
+                <option value="yes">Yes</option>
+            </select>
+        </label>
+        <br><br>
+
+        <div id="pregnancyDetails" class="hidden">
+            <label>How many months pregnant? <input type="number" id="monthsPregnant" min="1" max="9"></label>
+            <br><br>
+
+            <label>Is this your first pregnancy?
+                <select id="firstPregnancy">
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                </select>
+            </label>
+            <br><br>
+
+            <label>Have you taken the first dose of vaccination?
+                <select id="vaccinationStatus">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </label>
+            <br><br>
+
+            <div id="secondDoseSection" class="hidden">
+                <label>Have you taken the second dose of vaccination?
+                    <select id="secondDoseStatus">
+                        <option value="no">No</option>
+                        <option value="yes">Yes</option>
+                    </select>
+                </label>
+                <br><br>
+            </div>
+
+            <button onclick="checkVaccination()">Check</button>
+            <p><strong>Disclaimer:</strong> The vaccination should be taken on/before the one month delivery date.</p>
+        </div>
+
+        <p id="result"></p>
+        <p id="notification"></p>
+
+        <h3>Recommended Vaccinations:</h3>
+        <ul>
+            <li>Tetanus and Diphtheria (Td) Vaccine</li>
+            <li>Influenza (Flu) Vaccine</li>
+            <li>COVID-19 Vaccine</li>
+        </ul>
+    </div>
+
+    <script>
+        document.getElementById('pregnancyStatus').addEventListener('change', function() {
+            document.getElementById('pregnancyDetails').classList.toggle('hidden', this.value === 'no');
+        });
+
+        document.getElementById('monthsPregnant').addEventListener('input', function() {
+            let months = parseInt(this.value);
+            let firstPregnancy = document.getElementById('firstPregnancy').value;
+            document.getElementById('secondDoseSection').classList.toggle('hidden', months < 3 || firstPregnancy === 'no');
+        });
+
+        document.getElementById('vaccinationStatus').addEventListener('change', function() {
+            let notification = document.getElementById('notification');
+            if (this.value === 'no') {
+                notification.classList.add('red-text');
+            } else {
+                notification.classList.remove('red-text');
+            }
+        });
+
+        function checkVaccination() {
+            let months = parseInt(document.getElementById('monthsPregnant').value);
+            let firstPregnancy = document.getElementById('firstPregnancy').value;
+            let vaccinated = document.getElementById('vaccinationStatus').value;
+            let secondDose = document.getElementById('secondDoseStatus') ? document.getElementById('secondDoseStatus').value : 'no';
+            let resultText = "";
+            let notificationText = "";
+
+            if (vaccinated === 'yes' && (firstPregnancy === 'no' || secondDose === 'yes')) {
+                resultText = "Congratulations! Your vaccination is complete.";
+            } else {
+                if (months >= 1 && vaccinated === 'no') {
+                    resultText = "You should take the first dose of vaccination now.";
+                }
+
+                if (firstPregnancy === 'yes') {
+                    if (months >= 3 && vaccinated === 'yes' && secondDose === 'no') {
+                        resultText += " Since you are more than 3 months pregnant, consider taking the second dose of vaccination.";
+                    }
+                    notificationText = "Reminder: Take vaccination in the 1st and 3rd month of pregnancy.";
+                } else {
+                    notificationText = "Reminder: A single dose of vaccination is recommended during second or more pregnancies.";
+                }
+
+                if (months >= 8 && (vaccinated === 'no' || (firstPregnancy === 'yes' && secondDose === 'no'))) {
+                    resultText = "You have crossed your 8th month of pregnancy and haven't completed your vaccination. Please consult a doctor immediately.";
+                }
+            }
+
+            document.getElementById('result').innerText = resultText;
+            let notification = document.getElementById('notification');
+            notification.innerText = notificationText;
+
+            if (vaccinated === 'no') {
+                notification.classList.add('red-text');
+            } else {
+                notification.classList.remove('red-text');
+            }
+        }
+    </script>
+</body>
+</html>

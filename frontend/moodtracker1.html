@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mood Tracker</title>
+  <link rel="stylesheet" href="moodtracker1.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <a href="#home" class="navbar-logo">Glow Wise</a>
+      <ul class="navbar-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#contact">Contact Us</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Mood Logging Section -->
+    <section id="mood-logging" class="section mood-section">
+      <div class="form-container">
+        <h2>Log Your Mood</h2>
+        <p>Take a moment to reflect and log how you're feeling today.</p>
+        <form id="mood-form">
+          <div class="form-group">
+            <label for="mood">Mood</label>
+            <select id="mood" required>
+              <option value="" disabled selected>Select your mood</option>
+              <option value="happy">Happy 😊</option>
+              <option value="sad">Sad 😢</option>
+              <option value="stressed">Stressed 😟</option>
+              <option value="calm">Calm 😌</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="intensity">Intensity (1-10)</label>
+            <input type="number" id="intensity" min="1" max="10" required>
+          </div>
+
+          <div class="form-group">
+            <label for="note">Reason (Optional)</label>
+            <textarea id="note" rows="4" placeholder="Add a short note about why you feel this way..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="log-date">Date</label>
+            <input type="date" id="log-date" required>
+          </div>
+
+          <button type="submit" class="btn log-btn">Log Mood</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Visualization Section -->
+    <section id="mood-visualization" class="section mood-section">
+      <h2>Your Mood Trends</h2>
+      <p>Track your emotional patterns over time to understand your well-being.</p>
+      <div class="date-range">
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date">
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date">
+        <button id="filter-btn" class="btn log-btn">Filter</button>
+      </div>
+      <div class="chart-wrapper">
+        <canvas id="mood-chart"></canvas>
+      </div>
+      <div id="mood-message" class="mood-message">
+        <!-- Motivational message will be displayed here -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <p>©️ 2025 Glow Wise - Empowering Women Mental Well-being</p>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // Log Mood Data
+    document.getElementById('mood-form').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const mood = document.getElementById('mood').value;
+      const intensity = document.getElementById('intensity').value;
+      const note = document.getElementById('note').value;
+      const logDate = document.getElementById('log-date').value || new Date().toISOString().split('T')[0]; // Use selected date or default to today
+
+      if (!mood || !intensity || !logDate) {
+        alert('Please fill in all required fields.');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/api/mood-logs', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ mood, intensity, note, log_date: logDate })
+        });
+
+        if (response.ok) {
+          alert('Mood logged successfully!');
+          const moodLogs = await fetchMoodLogs(); // Fetch updated mood logs
+          generateMoodMessage(moodLogs); // Generate message immediately
+          fetchMoodTrends(); // Refresh the mood trends chart
+        } else {
+          const errorMessage = await response.text();
+          alert(`Error logging mood: ${errorMessage}`);
+        }
+      } catch (error) {
+        console.error('Error logging mood:', error);
+        alert('An error occurred while logging your mood.');
+      }
+    });
+
+    // Fetch all mood logs
+    async function fetchMoodLogs() {
+      const response = await fetch('http://localhost:3000/api/mood-logs');
+      if (response.ok) {
+        return await response.json();
+      } else {
+        console.error('Error fetching mood logs');
+        return [];
+      }
+    }
+
+    // Declare a variable to hold the chart instance
+    let moodChart;
+
+    // Fetch Mood Trends (Updated to include the entire end date)
+    async function fetchMoodTrends() {
+      const startDate = document.getElementById('start-date').value || '2025-01-01'; // Default start date
+      const endDate = document.getElementById('end-date').value || new Date().toISOString().split('T')[0]; // Default to today
+
+      try {
+        console.log(`Fetching mood trends from ${startDate} to ${endDate}`); // Debug log
+        const response = await fetch(`http://localhost:3000/api/mood-logs?start_date=${startDate}&end_date=${endDate}T23:59:59`); // Include the entire end date
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`Error response from server: ${errorText}`); // Log server error
+          throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+
+        const moodLogs = await response.json();
+        console.log('Mood logs fetched successfully:', moodLogs); // Debug log
+
+        if (!Array.isArray(moodLogs) || moodLogs.length === 0) {
+          console.warn('No mood logs found for the given date range.'); // Warn if no data
+          alert('No mood data available for the selected period.');
+          return;
+        }
+
+        // Format dates to "MM/DD"
+        const labels = moodLogs.map(log => {
+          const date = new Date(log.log_date);
+          return `${date.getMonth() + 1}/${date.getDate()}`; // Format as MM/DD
+        });
+
+        const data = moodLogs.map(log => log.intensity);
+
+        // Assign colors based on mood
+        const moodColors = moodLogs.map(log => {
+          switch (log.mood) {
+            case 'happy': return 'rgba(75, 192, 192, 1)'; // Teal
+            case 'sad': return 'rgba(54, 162, 235, 1)'; // Blue
+            case 'stressed': return 'rgba(255, 99, 132, 1)'; // Red
+            case 'calm': return 'rgba(153, 102, 255, 1)'; // Purple
+            default: return 'rgba(201, 203, 207, 1)'; // Gray
+          }
+        });
+
+        // Destroy the existing chart instance if it exists
+        if (moodChart) {
+          moodChart.destroy();
+        }
+
+        // Create a new chart instance
+        const ctx = document.getElementById('mood-chart').getContext('2d');
+        moodChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Mood Intensity',
+              data: data,
+              borderColor: 'rgba(0, 0, 0, 1)', // Set base line color to black
+              backgroundColor: 'rgba(0, 0, 0, 0.2)', // Transparent black background
+              borderWidth: 2,
+              pointBackgroundColor: moodColors, // Dynamic point colors based on mood
+              pointBorderColor: moodColors // Dynamic point border colors based on mood
+            }]
+          },
+          options: {
+            responsive: true,
+            plugins: {
+              legend: { display: true },
+              tooltip: { enabled: true }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Intensity (1-10)'
+                }
+              },
+              x: {
+                title: {
+                  display: true,
+                  text: 'Date (MM/DD)'
+                }
+              }
+            }
+          }
+        });
+
+        // Generate and display the motivational message
+        generateMoodMessage(moodLogs);
+
+      } catch (error) {
+        console.error('Error fetching mood trends:', error); // Log fetch error
+        alert(`An error occurred while fetching mood trends: ${error.message}. Please check the console for more details.`);
+      }
+    }
+
+    // Analyze Mood Data and Generate Message
+    function generateMoodMessage(moodLogs) {
+      const moodCounts = moodLogs.reduce((acc, log) => {
+        acc[log.mood] = (acc[log.mood] || 0) + 1;
+        return acc;
+      }, {});
+
+      let message = "Keep tracking your moods to gain insights into your well-being.";
+      if (moodCounts.stressed > moodCounts.happy) {
+        message = "It looks like you’re carrying a heavy load right now. Stress can be overwhelming, but don’t forget to pause and take care of yourself. Breathe deeply, step away for a moment, and refocus. Prioritize what truly matters, and don’t be afraid to ask for help. A short walk, some calming music, or even just stretching can help reset your mind. You’ve got this—one step at a time. 💪💙";
+      } else if (moodCounts.happy > moodCounts.sad) {
+        message = "You’re absolutely glowing with happiness! ✨ Your energy is electrifying, and it’s impossible not to feel the joy radiating from you. Hold onto this feeling—celebrate your wins, big or small, and surround yourself with things that make you feel alive. Keep expressing gratitude, chase your passions, and spread this positivity to those around you. And remember, happiness grows when shared—so keep shining and lifting others up along the way! 😊💛";
+      } else if (moodCounts.sad > moodCounts.happy) {
+        message ="I can sense that you're feeling down, and that’s okay. Tough moments are part of life, but they don’t define you. Take a deep breath, let yourself feel, and know that this feeling will pass. Try doing something that brings you comfort—a warm cup of tea, listening to your favorite music, or talking to someone you trust. You’re stronger than you think, and brighter days are ahead. 💙 Remember, you are not alone. 🌿";
+      } else if (moodCounts.calm > moodCounts.stressed) {
+        message = "You’re in a peaceful state, and that’s wonderful. Stay present in this moment—breathe deeply, feel the stillness, and let your mind rest. Whether it’s a quiet walk, a good book, or just enjoying the silence, embrace the tranquility. Keep nurturing this balance in your life, and don’t let the outside world shake your inner peace. Stay grounded, stay serene, and keep flowing effortlessly. ☁️✨";
+      }
+
+      document.getElementById('mood-message').textContent = message;
+    }
+
+    // Add event listener to filter button
+    document.getElementById('filter-btn').addEventListener('click', fetchMoodTrends);
+
+    // Fetch mood trends on page load
+    document.addEventListener('DOMContentLoaded', fetchMoodTrends);
+  </script>
+</body>
+</html>

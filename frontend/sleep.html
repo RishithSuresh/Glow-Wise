@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sleep Tracker</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8e8ee;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+        }
+        .navbar {
+            background-color: #4b286d;
+            padding: 15px 5px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            font-size: 18px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .container {
+            margin-top: 100px;
+            width: 90%;
+            max-width: 1200px;
+            padding: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .form-and-graph {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+        }
+        .form-container {
+            width: 40%;
+            padding: 20px;
+        }
+        h1 {
+            color: #4B0082;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="time"] {
+            width: 90%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #800080;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #6A0DAD;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #4B0082;
+            font-weight: bold;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: #ddd;
+            border-radius: 10px;
+            margin-top: 20px;
+            height: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            width: 0;
+            background-color: #4B0082;
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
+        }
+        .graph-container {
+            width: 55%;
+            padding: 20px;
+        }
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+        }
+    </style>
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="navbar">
+        <div>Glow Wise</div>
+        <div>
+            <a href="index1.html">Home</a>
+            <a href="index1.html#about">About Us</a>
+            <a href="features.html">Features</a>
+            <a href="index1.html#contact">Contact Us</a>
+        </div>
+    </div>
+    <div class="container">
+        <h1>Sleep Tracker</h1>
+        <div class="form-and-graph">
+            <div class="form-container">
+                <form id="sleepForm">
+                    <label for="bedtime">Bed Time:</label>
+                    <input type="time" id="bedtime" name="bedtime" required>
+                    
+                    <label for="waketime">Wake Time:</label>
+                    <input type="time" id="waketime" name="waketime" required>
+                    
+                    <button type="submit">Submit Sleep Data</button>
+                </form>
+                <div class="result" id="result"></div>
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+            </div>
+            <div class="graph-container">
+                <canvas id="sleepGraph"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('bedtime').value = localStorage.getItem('bedtime') || "";
+            document.getElementById('waketime').value = localStorage.getItem('waketime') || "";
+
+            fetchSleepData();
+        });
+
+        document.getElementById('sleepForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const bedtime = document.getElementById('bedtime').value;
+            const waketime = document.getElementById('waketime').value;
+
+            if (!bedtime || !waketime) {
+                document.getElementById('result').innerHTML = "Please enter both bed time and wake time.";
+                document.getElementById('result').style.opacity = "1";
+                return;
+            }
+
+            localStorage.setItem('bedtime', bedtime);
+            localStorage.setItem('waketime', waketime);
+
+            try {
+                console.log('Submitting sleep data:', { bedtime, waketime }); // Log data being sent
+                const response = await fetch('http://localhost:3000/api/sleep', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ bedtime, waketime })
+                });
+
+                if (response.ok) {
+                    document.getElementById('result').innerHTML = "Sleep data submitted successfully!";
+                    document.getElementById('result').style.opacity = "1";
+                    fetchSleepData();
+                } else {
+                    const errorData = await response.json();
+                    document.getElementById('result').innerHTML = `Error: ${errorData.error || 'Failed to submit sleep data.'}`;
+                    document.getElementById('result').style.opacity = "1";
+                }
+            } catch (error) {
+                console.error('Error submitting sleep data:', error);
+                document.getElementById('result').innerHTML = "Error: Unable to connect to the server.";
+                document.getElementById('result').style.opacity = "1";
+            }
+        });
+
+        async function fetchSleepData() {
+            try {
+                const response = await fetch('http://localhost:3000/api/sleep'); // Add full URL
+                if (response.ok) {
+                    const data = await response.json();
+                    renderGraph(data);
+                } else {
+                    console.error('Failed to fetch sleep data.');
+                }
+            } catch (error) {
+                console.error('Error fetching sleep data:', error);
+            }
+        }
+
+        function renderGraph(data) {
+            // Reverse the data to ensure the most recent entries appear on the right
+            const reversedData = data.reverse();
+
+            const ctx = document.getElementById('sleepGraph').getContext('2d');
+            const labels = reversedData.map(entry => new Date(entry.logged_at).toLocaleDateString());
+            const durations = reversedData.map(entry => entry.sleep_duration);
+            const qualities = reversedData.map(entry => {
+                switch (entry.sleep_quality) {
+                    case 'Good': return 3;
+                    case 'Moderate': return 2;
+                    case 'Poor': return 1;
+                    default: return 0;
+                }
+            });
+
+            // Destroy existing chart instance if it exists
+            if (window.sleepChart) {
+                window.sleepChart.destroy();
+            }
+
+            // Create a new chart instance
+            window.sleepChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'Sleep Duration (hours)',
+                            data: durations,
+                            borderColor: 'rgba(75, 0, 130, 1)',
+                            backgroundColor: 'rgba(75, 0, 130, 0.2)',
+                            fill: true,
+                            tension: 0.4 // Smooth curve
+                        },
+                        {
+                            label: 'Sleep Quality',
+                            data: qualities,
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            fill: true,
+                            tension: 0.4, // Smooth curve
+                            yAxisID: 'y2' // Use a second y-axis for sleep quality
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    if (context.dataset.label === 'Sleep Quality') {
+                                        const qualityMap = { 3: 'Good', 2: 'Moderate', 1: 'Poor' };
+                                        return `Sleep Quality: ${qualityMap[context.raw] || 'Unknown'}`;
+                                    }
+                                    return `${context.raw.toFixed(2)} hours`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Sleep Duration (hours)'
+                            }
+                        },
+                        y2: {
+                            beginAtZero: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Sleep Quality'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    const qualityMap = { 3: 'Good', 2: 'Moderate', 1: 'Poor' };
+                                    return qualityMap[value] || '';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
